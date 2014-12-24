@@ -1,0 +1,19 @@
+body{
+    font-family: Verdana, Geneva, sans-serif;
+    background-color: grey;
+}
+
+table th,td{
+	border: 3px solid black;
+    border-collapse: collapse;
+    }
+
+td {
+	padding: 05px;
+}
+
+#divTable{
+	background: #232;
+	text-align: center;
+	
+}
