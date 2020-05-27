@@ -22,13 +22,12 @@ class Square extends React.Component {
     };
     this.makeAMark = function() {
       if( this.state.currentValue === "" ) {
-        if( this.state.currentChance === superObj.userPlayer.playerName ){
-          this.state.currentValue = superObj.userPlayer.playerMove;
+        if( superObj.currentChance === superObj.userPlayer.playerName ){
+          this.setState({ currentValue : superObj.userPlayer.playerMove});
         } else {
-          this.state.currentValue = computerPlayer.playerMove;
+          this.setState({ currentValue : superObj.computerPlayer.playerMove});
         }
-        this.state.currentChance = ( this.state.currentChance === superObj.userPlayer.playerName ) ? computerPlayer.playerName : superObj.userPlayer.playerName;
-        console.log( this.state );
+        superObj.currentChance = ( superObj.currentChance === superObj.userPlayer.playerName ) ? superObj.computerPlayer.playerName : superObj.userPlayer.playerName;
       }
     }
   }
@@ -37,8 +36,8 @@ class Square extends React.Component {
     const heightAvailable = 0.33 * window.innerHeight;
 
     return (
-      <div align="center" id={ this.props.row + "_" + this.props.column} className="square" onClick={ () => this.makeAMark() } style={ {fontSize : heightAvailable} }>
-        {this.state.currentValue}    
+      <div align="center" id={ this.props.row + "_" + this.props.column} className="square" onClick={ () => this.makeAMark() } style={ {fontSize : heightAvailable - 10} }>
+        <div> {this.state.currentValue} </div>
       </div>
     );
   }
