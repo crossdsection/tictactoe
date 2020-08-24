@@ -11,7 +11,8 @@ const superObj = {
   userPlayer : {
     playerName: "user",
     playerMove: "X"
-  }
+  },
+  currentMatrix: []
 };
 
 class Square extends React.Component {
@@ -37,7 +38,7 @@ class Square extends React.Component {
 
     return (
       <div align="center" id={ this.props.row + "_" + this.props.column} className="square" onClick={ () => this.makeAMark() } style={ {fontSize : heightAvailable - 10} }>
-        <div> {this.state.currentValue} </div>
+        <div style={ { width : "100%", height: "100%", lineHeight: "100%"}}> {this.state.currentValue} </div>
       </div>
     );
   }
