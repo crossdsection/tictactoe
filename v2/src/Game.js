@@ -25,15 +25,7 @@ class Square extends React.Component {
 
 class Board extends React.Component {
   state = {
-    currentChance: "user",
-    computerPlayer: {
-      playerName: "machine",
-      playerMove: "O",
-    },
-    userPlayer: {
-      playerName: "user",
-      playerMove: "X",
-    },
+    currentMove: "X",
     currentMatrix: [
       ["", "", ""],
       ["", "", ""],
@@ -42,7 +34,7 @@ class Board extends React.Component {
   };
 
   renderSquare(i, j) {
-    const { currentChance, computerPlayer, currentMatrix } = this.state;
+    const { currentMatrix } = this.state;
     return (
       <Square
         key={i + j}
@@ -56,19 +48,13 @@ class Board extends React.Component {
 
   handleSquareClick = (i, j) => {
     this.setState((prevState) => {
-      if (prevState.currentChance === prevState.computerPlayer.playerName) {
-        prevState.currentMatrix[i][j] = prevState.computerPlayer.playerMove;
-      } else {
-        prevState.currentMatrix[i][j] = prevState.userPlayer.playerMove;
-      }
+      prevState.currentMatrix[i][j] = prevState.currentMove;
       return {
-        currentChance:
-          prevState.currentChance === prevState.userPlayer.playerName
-            ? prevState.computerPlayer.playerName
-            : prevState.userPlayer.playerName,
         currentMatrix: prevState.currentMatrix,
+        currentMove: (prevState.currentMove === 'X') ? 'O' : 'X'
       };
     });
+    console.log(this.state)
   };
 
   renderBoardRow(i) {
