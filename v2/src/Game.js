@@ -32,6 +32,17 @@ class Board extends React.Component {
       ["", "", ""],
       ["", "", ""],
     ],
+    indexesFlag: {
+      "0_0": false,
+      "0_1": false,
+      "0_2": false,
+      "1_0": false,
+      "1_1": false,
+      "1_2": false,
+      "2_0": false,
+      "2_1": false,
+      "2_2": false
+    },
     winningSets: [
       [[0,0],[0,1],[0,2]],
       [[1,0],[1,1],[1,2]],
@@ -58,7 +69,7 @@ class Board extends React.Component {
     );
   }
 
-  checkWin = () => {
+  checkWin = (currentMove, row, col) => {
     for( const winningSet of this.state.winningSets ) {
       let firstValue = this.state.currentMatrix[ winningSet[0][0] ][ winningSet[0][1] ];
       let secondValue = this.state.currentMatrix[ winningSet[1][0] ][ winningSet[1][1] ];
@@ -67,6 +78,45 @@ class Board extends React.Component {
         return this.state.currentMove;
       } 
     }
+    if(currentMove === 'X') {
+      let flagOMoved = false;
+      let indexesAvailable = [];
+      for( let index in this.state.indexesFlag ) {
+        if( !this.state.indexesFlag[index] ) {
+          indexesAvailable.push(index);
+        }
+      }
+      for( const winningSet of this.state.winningSets ) {
+        let flagFound = false;
+        for( const pos of winningSet ) {
+          if( pos[0] === row && pos[1] === col ) {
+            flagFound = true;
+          }
+        }
+        if( flagFound ) {
+          let firstValue = this.state.currentMatrix[ winningSet[0][0] ][ winningSet[0][1] ];
+          let secondValue = this.state.currentMatrix[ winningSet[1][0] ][ winningSet[1][1] ];
+          let thirdValue = this.state.currentMatrix[ winningSet[2][0] ][ winningSet[2][1] ];
+          if( firstValue === secondValue && firstValue === currentMove && thirdValue === "" ) {
+            this.handleSquareClick( winningSet[2][0], winningSet[2][1] );
+            flagOMoved = true;
+            break;
+          } else if( thirdValue === secondValue && thirdValue === currentMove && firstValue === "") {
+            this.handleSquareClick( winningSet[0][0], winningSet[0][1] );
+            flagOMoved = true;
+            break;
+          } else if( firstValue === thirdValue && firstValue === currentMove && secondValue === "") {
+            this.handleSquareClick( winningSet[1][0], winningSet[1][1] );
+            flagOMoved = true;
+            break;
+          } 
+        }
+      }
+      if( !flagOMoved ) {
+        const [ row, col ] = indexesAvailable[ Math.round(Math.random() * (indexesAvailable.length - 1)) ].split("_");
+        this.handleSquareClick( row, col );
+      }
+    }
     return false;
   }
 
@@ -74,7 +124,9 @@ class Board extends React.Component {
     this.setState((prevState) => {
       if( prevState.currentMatrix[i][j] === "" && prevState.won === "" ) {
         prevState.currentMatrix[i][j] = prevState.currentMove;
-        prevState.won = (this.checkWin() !== false) ? (this.checkWin() === 'X') ? 'user' : 'machine' : "";
+        prevState.indexesFlag[ i + "_" + j ] = true;
+        let result = this.checkWin( prevState.currentMove, i, j );
+        prevState.won = (result !== false) ? (result === 'X') ? 'user' : 'machine' : "";
         prevState.currentMove = (prevState.currentMove === 'X') ? 'O' : 'X';
       }
       return {
@@ -105,7 +157,7 @@ class Board extends React.Component {
 
     return (
       <>
-        <Alert show={this.state.won != ""} variant="success">
+        <Alert show={this.state.won !== ""} variant="success">
           <Alert.Heading>{this.state.won} won!!</Alert.Heading>
         </Alert>
         <div className="game-board" style={{ width: boardWidth }}>
